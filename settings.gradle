@@ -1,4 +1,4 @@
-//Library projects
+include ':ygygcs'//Library projects
 include ':Mavlink'
 
 //Android library projects

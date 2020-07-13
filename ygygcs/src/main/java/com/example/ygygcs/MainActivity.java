@@ -91,13 +91,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     btnCadastral.setText("지적도ON");
                     mapCadstral = false;
                 }else{
-                    if(btnMapType.getText().equals("일반지도")){
-                        myMap.setMapType(NaverMap.MapType.Basic);
-                    }else if(btnMapType.getText().equals("위성지도")){
-                        myMap.setMapType(NaverMap.MapType.Satellite);
-                    }else if(btnMapType.getText().equals("지형도")){
-                        myMap.setMapType(NaverMap.MapType.Terrain);
-                    }
                     myMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL, false);
                     btnCadastral.setText("지적도OFF");
                     mapCadstral = true;
@@ -109,7 +102,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(mapONOFf){
 
+                }else{
+                    btnMap.setText("맵 잠금");
+                    mapONOFf = true;
+                }
             }
         });
     }

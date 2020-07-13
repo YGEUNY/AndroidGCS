@@ -19,24 +19,119 @@
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@android:color/background_dark"
     tools:ignore="MissingConstraints" />
+
     <TextView
-        android:id="@+id/speedValueTextView"
+        android:id="@+id/voltLabelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="전압"
+        android:layout_marginStart="60dp"
+        android:text="전압  "
+        app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints" />
 
-
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/voltValueTextView"
+        android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="ㅁㅁㅁㅁ"
+        android:text=" "
+        app:layout_constraintStart_toEndOf="@+id/voltLabelTextView"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/altitudeLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:text="비행보드  "
+        app:layout_constraintStart_toEndOf="@+id/voltValueTextView"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/altitudeValueTextView"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text=" "
+        app:layout_constraintStart_toEndOf="@+id/altitudeLabelTextView"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteY="32dp" />
+
+    <TextView
+        android:id="@+id/distanceLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="고도  "
+        tools:ignore="DuplicateIds,MissingConstraints"
+        tools:layout_editor_absoluteX="298dp"
+        tools:layout_editor_absoluteY="69dp" />
+
+    <TextView
+        android:id="@+id/distanceValueTextView"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text=" "
+        tools:ignore="DuplicateIds,MissingConstraints"
+        tools:layout_editor_absoluteX="346dp"
+        tools:layout_editor_absoluteY="69dp" />
+
+    <TextView
+        android:id="@+id/speedLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="속도  "
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="404dp"
+        tools:layout_editor_absoluteY="62dp" />
+
+    <TextView
+        android:id="@+id/speedValueTextView"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text=" "
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="457dp"
+        tools:layout_editor_absoluteY="88dp" />
+
+    <TextView
+        android:id="@+id/yawLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="YAW  "
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="510dp"
+        tools:layout_editor_absoluteY="81dp" />
+
+    <TextView
+        android:id="@+id/yawValueTextView"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text=" "
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="567dp"
+        tools:layout_editor_absoluteY="81dp" />
+
+    <TextView
+        android:id="@+id/satelliteLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="위성  "
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="205dp"
+        tools:layout_editor_absoluteY="69dp" />
+
     />
 
+    <TextView
+        android:id="@+id/satelliteValueTextView"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text=" "
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="256dp"
+        tools:layout_editor_absoluteY="69dp" />
 
     <TableLayout
         android:id="@+id/buttonLayout"
@@ -104,7 +199,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="10dp"
-        android:text="맵 잠금"
+        android:text="맵 해제"
         app:layout_constraintBottom_toBottomOf="@+id/map"
         app:layout_constraintEnd_toStartOf="@+id/mapType" />
 

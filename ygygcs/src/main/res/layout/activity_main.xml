@@ -13,23 +13,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
-<LinearLayout
+    <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/background_dark"
-    tools:ignore="MissingConstraints" />
+    android:background="#000000"
+    tools:ignore="MissingConstraints" >
 
     <TextView
         android:id="@+id/voltLabelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
+        android:layout_marginStart="80dp"
         android:text="전압  "
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/voltValueTextView"
@@ -38,100 +38,114 @@
         android:text=" "
         app:layout_constraintStart_toEndOf="@+id/voltLabelTextView"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        android:textColor="#FFFFFF"/>
+
+    <TextView
+        android:id="@+id/vehicleModeLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="비행모드  "
+        app:layout_constraintStart_toEndOf="@+id/voltValueTextView"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints"
+        android:textColor="#FFFFFF"/>
+
+    <TextView
+        android:id="@+id/vehicleModeValueTextView"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text=" "
+        app:layout_constraintStart_toEndOf="@+id/altitudeLabelTextView"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints"
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/altitudeLabelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:text="비행보드  "
-        app:layout_constraintStart_toEndOf="@+id/voltValueTextView"
+        android:layout_marginStart="20dp"
+        android:text="고도  "
+        app:layout_constraintStart_toEndOf="@+id/altitudeValueTextView"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="DuplicateIds,MissingConstraints"
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/altitudeValueTextView"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:text=" "
-        app:layout_constraintStart_toEndOf="@+id/altitudeLabelTextView"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteY="32dp" />
-
-    <TextView
-        android:id="@+id/distanceLabelTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="고도  "
+        app:layout_constraintStart_toEndOf="@+id/distanceLabelTextView"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="DuplicateIds,MissingConstraints"
-        tools:layout_editor_absoluteX="298dp"
-        tools:layout_editor_absoluteY="69dp" />
-
-    <TextView
-        android:id="@+id/distanceValueTextView"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:text=" "
-        tools:ignore="DuplicateIds,MissingConstraints"
-        tools:layout_editor_absoluteX="346dp"
-        tools:layout_editor_absoluteY="69dp" />
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/speedLabelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="속도  "
+        app:layout_constraintStart_toEndOf="@+id/distanceValueTextView"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="404dp"
-        tools:layout_editor_absoluteY="62dp" />
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/speedValueTextView"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:text=" "
+        app:layout_constraintStart_toEndOf="@+id/speedLabelTextView"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="457dp"
-        tools:layout_editor_absoluteY="88dp" />
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/yawLabelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="YAW  "
+        app:layout_constraintStart_toEndOf="@+id/speedValueTextView"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="510dp"
-        tools:layout_editor_absoluteY="81dp" />
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/yawValueTextView"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:text=" "
+        app:layout_constraintStart_toEndOf="@+id/yawLabelTextView"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="567dp"
-        tools:layout_editor_absoluteY="81dp" />
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/satelliteLabelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="위성  "
+        app:layout_constraintStart_toEndOf="@+id/yawValueTextView"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="205dp"
-        tools:layout_editor_absoluteY="69dp" />
-
-    />
+        android:textColor="#FFFFFF"/>
 
     <TextView
         android:id="@+id/satelliteValueTextView"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:text=" "
+        app:layout_constraintStart_toEndOf="@+id/satelliteLabelTextView"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="256dp"
-        tools:layout_editor_absoluteY="69dp" />
+        android:textColor="#FFFFFF"/>
+    </LinearLayout>
 
     <TableLayout
         android:id="@+id/buttonLayout"
@@ -147,51 +161,36 @@
             android:id="@+id/BasicMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="일반지도" />
+            android:text="일반지도"
+            android:background="#F6CEF5"/>
 
         <Button
             android:id="@+id/TerrainMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="지형도" />
+            android:text="지형도"
+            android:background="#F6CEF5"/>
 
         <Button
             android:id="@+id/SatelliteMap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="위성지도" />
+            android:text="위성지도"
+            android:background="#F6CEF5"/>
 
     </TableLayout>
 
     <Button
-        android:id="@+id/mapType"
+        android:id="@+id/droneConnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="10dp"
-        android:text="일반지도"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/cadastralONOff" />
+        android:text="Disconnect"
 
-    <Button
-        android:id="@+id/cadastralONOff"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="10dp"
-        android:text="지적도OFF"
+        android:background="#F6CEF5"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/clear" />
-
-    <Button
-        android:id="@+id/clear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="CLEAR"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/mapOnOff" />
 
     <Button
         android:id="@+id/mapOnOff"
@@ -201,35 +200,52 @@
         android:layout_marginBottom="10dp"
         android:text="맵 해제"
         app:layout_constraintBottom_toBottomOf="@+id/map"
-        app:layout_constraintEnd_toStartOf="@+id/mapType" />
+        app:layout_constraintEnd_toStartOf="@+id/mapType"
+        android:background="#F6CEF5"/>
 
     <Button
-        android:id="@+id/land"
+        android:id="@+id/mapType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginEnd="7dp"
         android:layout_marginBottom="10dp"
-        android:text="LAND"
+        android:text="일반지도"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/takeOff" />
+        app:layout_constraintEnd_toStartOf="@+id/cadastralONOff"
+        android:background="#F6CEF5"/>
 
     <Button
-        android:id="@+id/takeOff"
+        android:id="@+id/cadastralONOff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginEnd="7dp"
         android:layout_marginBottom="10dp"
-        android:text="TAKE-OFF"
+        android:text="지적도OFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/arm" />
+        app:layout_constraintEnd_toStartOf="@+id/clear"
+        android:background="#F6CEF5"/>
+
+    <Button
+        android:id="@+id/clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="CLEAR"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="#F6CEF5"/>
+
 
     <Button
         android:id="@+id/arm"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginBottom="10dp"
         android:text="ARM"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="#F6CEF5"/>
 </android.support.constraint.ConstraintLayout>

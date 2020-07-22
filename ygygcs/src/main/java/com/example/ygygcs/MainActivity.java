@@ -1,6 +1,7 @@
 package com.example.ygygcs;
 
 import android.content.Context;
+import android.location.GpsSatellite;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -39,7 +40,10 @@ import com.o3dr.services.android.lib.drone.companion.solo.SoloAttributes;
 import com.o3dr.services.android.lib.drone.companion.solo.SoloState;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
 import com.o3dr.services.android.lib.drone.connection.ConnectionType;
+import com.o3dr.services.android.lib.drone.mission.item.command.YawCondition;
 import com.o3dr.services.android.lib.drone.property.Altitude;
+import com.o3dr.services.android.lib.drone.property.Attitude;
+import com.o3dr.services.android.lib.drone.property.Battery;
 import com.o3dr.services.android.lib.drone.property.Gps;
 import com.o3dr.services.android.lib.drone.property.Home;
 import com.o3dr.services.android.lib.drone.property.Speed;
@@ -238,6 +242,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 alertUser("Drone Disconnected");
                 updateConnectedButton(this.drone.isConnected());
                 updateArmButton();
+                clearInformationbar();
                 break;
 
             case AttributeEvent.STATE_UPDATED:
@@ -257,6 +262,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 updateVehicleMode();
                 break;
 
+            case AttributeEvent.BATTERY_UPDATED:
+                updateVolt();
+                break;
+
             case AttributeEvent.SPEED_UPDATED:
                 updateSpeed();
                 break;
@@ -265,12 +274,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 updateAltitude();
                 break;
 
-            case AttributeEvent.HOME_UPDATED:
-                updateDistanceFromHome();
+            case AttributeEvent.GPS_COUNT:
+                updateSatellite();
                 break;
 
+            case AttributeEvent.ATTITUDE_UPDATED:
+                updateYaw();
+                break;
+
+//            case AttributeEvent.HOME_UPDATED:
+//                updateDistanceFromHome();
+//                break;
+
             default:
-                // Log.i("DRONE_EVENT", event); //Uncomment to see events from the drone
+                Log.i("DRONE_EVENT", event); //Uncomment to see events from the drone
                 break;
         }
     }
@@ -316,6 +333,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d(TAG, message);
     }
 
+    protected void updateVolt(){
+        TextView voltTextView = (TextView)findViewById(R.id.voltValueTextView);
+        Battery droneVolt = this.drone.getAttribute(AttributeType.BATTERY);
+        voltTextView.setText(String.format("%3.1f",droneVolt.getBatteryVoltage()) + "V");
+    }
+
+//    public void onFlightModeSelected(View view) {
+//        VehicleMode vehicleMode = (VehicleMode) this.modeSelector.getSelectedItem();
+//
+//        VehicleApi.getApi(this.drone).setVehicleMode(vehicleMode, new AbstractCommandListener() {
+//            @Override
+//            public void onSuccess() {
+//                alertUser("Vehicle mode change successful.");
+//            }
+//
+//            @Override
+//            public void onError(int executionError) {
+//                alertUser("Vehicle mode change failed: " + executionError);
+//            }
+//
+//            @Override
+//            public void onTimeout() {
+//                alertUser("Vehicle mode change timed out.");
+//            }
+//        });
+//    }
+
     protected void updateSpeed(){
         TextView speedTextView = (TextView)findViewById(R.id.speedValueTextView);
         Speed droneSpeed = this.drone.getAttribute(AttributeType.SPEED);
@@ -328,25 +372,37 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         altitudeTextView.setText(String.format("%3.1f", droneAltitude.getAltitude()) + "m");
     }
 
-    protected void updateDistanceFromHome() {
-        TextView distanceTextView = (TextView) findViewById(R.id.distanceValueTextView);
-        Altitude droneAltitude = this.drone.getAttribute(AttributeType.ALTITUDE);
-        double vehicleAltitude = droneAltitude.getAltitude();
-        Gps droneGps = this.drone.getAttribute(AttributeType.GPS);
-        LatLong vehiclePosition = droneGps.getPosition();
-
-        double distanceFromHome = 0;
-
-        if (droneGps.isValid()) {
-            LatLongAlt vehicle3DPosition = new LatLongAlt(vehiclePosition.getLatitude(), vehiclePosition.getLongitude(), vehicleAltitude);
-            Home droneHome = this.drone.getAttribute(AttributeType.HOME);
-            distanceFromHome = distanceBetweenPoints(droneHome.getCoordinate(), vehicle3DPosition);
-        } else {
-            distanceFromHome = 0;
-        }
-
-        distanceTextView.setText(String.format("%3.1f", distanceFromHome) + "m");
+    protected void updateYaw(){
+        TextView yawTextView = (TextView)findViewById(R.id.yawValueTextView);
+        Attitude droneYaw = this.drone.getAttribute(AttributeType.ATTITUDE);
+        yawTextView.setText(String.format("%3.1f",droneYaw.getYaw()) + "deg");
     }
+
+    protected void updateSatellite(){
+        TextView satelliteTextView = (TextView)findViewById(R.id.satelliteValueTextView);
+        Gps droneSatellite = this.drone.getAttribute(AttributeType.GPS);
+        satelliteTextView.setText(droneSatellite.getSatellitesCount() + "개");
+    }
+
+//    protected void updateDistanceFromHome() {
+//        TextView distanceTextView = (TextView) findViewById(R.id.distanceValueTextView);
+//        Altitude droneAltitude = this.drone.getAttribute(AttributeType.ALTITUDE);
+//        double vehicleAltitude = droneAltitude.getAltitude();
+//        Gps droneGps = this.drone.getAttribute(AttributeType.GPS);
+//        LatLong vehiclePosition = droneGps.getPosition();
+//
+//        double distanceFromHome = 0;
+//
+//        if (droneGps.isValid()) {
+//            LatLongAlt vehicle3DPosition = new LatLongAlt(vehiclePosition.getLatitude(), vehiclePosition.getLongitude(), vehicleAltitude);
+//            Home droneHome = this.drone.getAttribute(AttributeType.HOME);
+//            distanceFromHome = distanceBetweenPoints(droneHome.getCoordinate(), vehicle3DPosition);
+//        } else {
+//            distanceFromHome = 0;
+//        }
+//
+//        distanceTextView.setText(String.format("%3.1f", distanceFromHome) + "m");
+//    }
 
     protected void updateConnectedButton(Boolean isConnected) {
         Button connectButton = (Button) findViewById(R.id.droneConnect);
@@ -359,28 +415,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     protected void updateArmButton() {
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
-        Button armButton = (Button) findViewById(R.id.arm);
-
+        btnArm = (Button) findViewById(R.id.arm);
+//Button armButton
         if (!this.drone.isConnected()) {
-            armButton.setVisibility(View.INVISIBLE);
+            btnArm.setVisibility(View.INVISIBLE);
         } else {
-            armButton.setVisibility(View.VISIBLE);
+            btnArm.setVisibility(View.VISIBLE);
         }
 
         if (vehicleState.isFlying()) {
             // Land
-            armButton.setText("LAND");
+            btnArm.setText("LAND");
         } else if (vehicleState.isArmed()) {
             // Take off
-            armButton.setText("TAKE OFF");
+            btnArm.setText("TAKE OFF");
         } else if (vehicleState.isConnected()) {
             // Connected but not Armed
-            armButton.setText("ARM");
+            btnArm.setText("ARM");
         }
     }
 
     protected void updateVehicleModesForType(int droneType) {
-
         List<VehicleMode> vehicleModes = VehicleMode.getVehicleModePerDroneType(droneType);
         ArrayAdapter<VehicleMode> vehicleModeArrayAdapter = new ArrayAdapter<VehicleMode>(this, android.R.layout.simple_spinner_item, vehicleModes);
         vehicleModeArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -394,6 +449,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
    //     modeTextView.setText(String.format("%3.1f");
 //        ArrayAdapter arrayAdapter = (ArrayAdapter) this.modeSelector.getAdapter();
 //        this.modeSelector.setSelection(arrayAdapter.getPosition(vehicleMode));
+    }
+
+    protected void clearInformationbar(){
+        TextView voltTextView = (TextView) findViewById(R.id.voltValueTextView);
+        voltTextView.setText("");
+
+        TextView flightModeTextView = (TextView) findViewById(R.id.vehicleModeValueTextView);
+        flightModeTextView.setText("");
+
+        TextView altitudeTextView = (TextView) findViewById(R.id.altitudeValueTextView);
+        altitudeTextView.setText("");
+
+        TextView speedTextView = (TextView)findViewById(R.id.speedValueTextView);
+        speedTextView.setText("");
+
+        TextView yawTextView = (TextView) findViewById(R.id.yawValueTextView);
+        yawTextView.setText("");
+
+        TextView satelliteTextView = (TextView) findViewById(R.id.satelliteValueTextView);
+        satelliteTextView.setText("");
     }
 
     protected double distanceBetweenPoints(LatLongAlt pointA, LatLongAlt pointB) {

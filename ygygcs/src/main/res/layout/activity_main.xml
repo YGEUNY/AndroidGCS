@@ -186,8 +186,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="10dp"
-        android:text="Disconnect"
-
+        android:text="연결하기"
         android:background="#F6CEF5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/mapOnOff" />
@@ -236,7 +235,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:background="#F6CEF5"/>
 
-
     <Button
         android:id="@+id/arm"
         android:visibility="gone"
@@ -247,5 +245,17 @@
         android:text="ARM"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:background="#F6CEF5"/>
+
+    <Button
+        android:id="@+id/flightMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginBottom="10dp"
+        android:visibility="gone"
+        android:text="비행모드"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/arm"
         android:background="#F6CEF5"/>
 </android.support.constraint.ConstraintLayout>

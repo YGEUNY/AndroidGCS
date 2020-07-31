@@ -189,10 +189,10 @@
         android:text="연결하기"
         android:background="#F6CEF5"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/mapOnOff" />
+        app:layout_constraintEnd_toStartOf="@+id/mapLock" />
 
     <Button
-        android:id="@+id/mapOnOff"
+        android:id="@+id/mapLock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="7dp"

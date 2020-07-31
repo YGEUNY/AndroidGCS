@@ -1,6 +1,7 @@
 package com.example.ygygcs;
 
 import android.content.Context;
+import android.graphics.PointF;
 import android.location.GpsSatellite;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -61,6 +62,7 @@ import com.o3dr.services.android.lib.model.SimpleCommandListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.o3dr.android.client.apis.ExperimentalApi.getApi;
@@ -73,8 +75,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private MediaCodecManager mediaCodecManager;
     private int markerCount = 0;
     NaverMap myMap;
-    final UiSettings uiSettings = myMap.getUiSettings();
-    Button btnArm, btnFlightMode, btnMap, btnMapType, btnCadastral, btnClear, btnBasic, btnSatellite,  btnTerrain, btnDroneConnect;
+
+
+    Button btnArm, btnFlightMode, btnMapLock, btnMapType, btnCadastral, btnClear, btnBasic, btnSatellite,  btnTerrain, btnDroneConnect;
     TableLayout visBtn;
     Boolean mapONOFf, mapClear, mapCadstral;
     Handler mainHandler;
@@ -99,12 +102,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         mapFragment.getMapAsync(this);
         btnStart();
-
     }
 
+    @Override
+    public void onMapReady(@NonNull NaverMap naverMap) {
+        this.myMap = naverMap;
+        myMap.setMapType(NaverMap.MapType.Basic);
+
+        UiSettings uiSettings = naverMap.getUiSettings();
+        uiSettings.setLogoMargin(2080, 0, 0, 925);
+
+        uiSettings.setScrollGesturesEnabled(false);
+    }
+
+    // 버튼 이벤트
     public void btnStart(){
         btnArm = findViewById(R.id.arm);
-        btnMap = findViewById(R.id.mapOnOff);
+        btnMapLock = findViewById(R.id.mapLock);
         btnMapType = findViewById(R.id.mapType);
         btnCadastral = findViewById(R.id.cadastralONOff);
         btnClear = findViewById(R.id.clear);
@@ -114,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         visBtn = findViewById(R.id.buttonLayout);
         btnDroneConnect = findViewById(R.id.droneConnect);
         btnFlightMode = findViewById(R.id.flightMode);
+        final UiSettings uiSettings = myMap.getUiSettings();
 
         btnMapType.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,16 +184,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         mapONOFf = true;
-        btnMap.setOnClickListener(new View.OnClickListener() {
+        btnMapLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mapONOFf){
-                    uiSettings.setScrollGesturesEnabled(false);
-                    btnMap.setText("맵 해제");
+               //     uiSettings.setScrollGesturesEnabled(false);
+                    btnMapLock.setText("맵 해제");
                     mapONOFf = false;
                 }else{
-                    uiSettings.setScrollGesturesEnabled(true);
-                    btnMap.setText("맵 잠금");
+               //     uiSettings.setScrollGesturesEnabled(true);
+                    btnMapLock.setText("맵 잠금");
                     mapONOFf = true;
                 }
             }
@@ -222,15 +237,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 armConnect();
             }
         });
-    }
-
-
-    @Override
-    public void onMapReady(@NonNull NaverMap naverMap) {
-        this.myMap = naverMap;
-        myMap.setMapType(NaverMap.MapType.Basic);
-
-
     }
 
     @Override
@@ -516,9 +522,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
          if((int) yaw < 0){
              yaw += 360;
          }
+         markers.get(markerCount).setAngle((float)yaw);
 
-         markers.get(markerCount).setIcon(OverlayImage.fromResource(R.drawable.));
-       }
+         markers.get(markerCount).setHeight(400);
+         markers.get(markerCount).setWidth(100);
+         markers.get(markerCount).setIcon(OverlayImage.fromResource(R.drawable.drone_marker));
+         //markers.get(markerCount).setAnchor(new PointF(0.5F, 0.9F));
+         markers.get(markerCount).setMap(myMap);
+
+         Button btnMapMove = findViewById(R.id.mapLock);
+         String text = (String)btnMapMove.getText();
+         if(text.equals("맵 잠금")){
+            cameraUpdate = CameraUpdate.scrollTo(new LatLng(vehiclePosition.getLatitude(), vehiclePosition.getLongitude()));
+             myMap.moveCamera(cameraUpdate);
+         }
+
+//            Collections.addAll(coords, markers.get(Marker_Count).getPosition());
+//            polyline.setCoords(coords);
+        }
     }
 
     protected void updateConnectedButton(Boolean isConnected) {

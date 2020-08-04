@@ -16,135 +16,136 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#80000000"
-    tools:ignore="MissingConstraints" >
-
-    <TextView
-        android:id="@+id/voltLabelTextView"
-        android:layout_width="wrap_content"
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:text="전압  "
-        app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints"
-        android:textColor="#FFFFFF"/>
+        android:background="#80000000"
+        tools:ignore="MissingConstraints">
 
-    <TextView
-        android:id="@+id/voltValueTextView"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:text=" "
-        app:layout_constraintStart_toEndOf="@+id/voltLabelTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/voltLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="80dp"
+            android:text="전압  "
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/vehicleModeLabelTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="비행모드  "
-        app:layout_constraintStart_toEndOf="@+id/voltValueTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/voltValueTextView"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/voltLabelTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/vehicleModeValueTextView"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:text=" "
-        app:layout_constraintStart_toEndOf="@+id/altitudeLabelTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/vehicleModeLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="비행모드  "
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/voltValueTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/altitudeLabelTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="고도  "
-        app:layout_constraintStart_toEndOf="@+id/altitudeValueTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="DuplicateIds,MissingConstraints"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/vehicleModeValueTextView"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/altitudeLabelTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/altitudeValueTextView"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:text=" "
-        app:layout_constraintStart_toEndOf="@+id/distanceLabelTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="DuplicateIds,MissingConstraints"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/altitudeLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="고도  "
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/altitudeValueTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="DuplicateIds,MissingConstraints" />
 
-    <TextView
-        android:id="@+id/speedLabelTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="속도  "
-        app:layout_constraintStart_toEndOf="@+id/distanceValueTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/altitudeValueTextView"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/distanceLabelTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="DuplicateIds,MissingConstraints" />
 
-    <TextView
-        android:id="@+id/speedValueTextView"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:text=" "
-        app:layout_constraintStart_toEndOf="@+id/speedLabelTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/speedLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="속도  "
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/distanceValueTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/yawLabelTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="YAW  "
-        app:layout_constraintStart_toEndOf="@+id/speedValueTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/speedValueTextView"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/speedLabelTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/yawValueTextView"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:text=" "
-        app:layout_constraintStart_toEndOf="@+id/yawLabelTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/yawLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="YAW  "
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/speedValueTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/satelliteLabelTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="위성  "
-        app:layout_constraintStart_toEndOf="@+id/yawValueTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/yawValueTextView"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/yawLabelTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/satelliteValueTextView"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:text=" "
-        app:layout_constraintStart_toEndOf="@+id/satelliteLabelTextView"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        android:textColor="#FFFFFF"/>
+        <TextView
+            android:id="@+id/satelliteLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:text="위성  "
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/yawValueTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/satelliteValueTextView"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text=" "
+            android:textColor="#FFFFFF"
+            app:layout_constraintStart_toEndOf="@+id/satelliteLabelTextView"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="MissingConstraints" />
     </LinearLayout>
 
     <TableLayout
@@ -179,6 +180,73 @@
             android:background="#F6CEF5"/>
 
     </TableLayout>
+
+    <Button
+        android:id="@+id/arm"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="10dp"
+        android:text="ARM"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="#F6CEF5"/>
+
+    <TableLayout
+        android:id="@+id/spinnerLayout"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/arm"
+        android:background="#F6CEF5">
+
+        <Spinner
+            android:id="@+id/flightModeSelector"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="10dp"
+            android:spinnerMode="dropdown" />
+    </TableLayout>
+
+    <Button
+        android:id="@+id/takeOffBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="20dp"
+        android:text="이륙고도"
+        app:layout_constraintBottom_toTopOf="@+id/arm"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="#F6FEE3"/>
+
+    <LinearLayout
+        android:id="@+id/takeOffLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/takeOffBtn">
+
+
+
+        <Button
+            android:id="@+id/takeOffDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#F6FEE3" />
+        <Button
+            android:id="@+id/takeOffUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#F6FEE3"
+            android:layout_marginLeft="5dp"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/droneConnect"
@@ -219,7 +287,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="10dp"
-        android:text="지적도OFF"
+        android:text="지적도ON"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/clear"
         android:background="#F6CEF5"/>
@@ -235,27 +303,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:background="#F6CEF5"/>
 
-    <Button
-        android:id="@+id/arm"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="10dp"
-        android:text="ARM"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="#F6CEF5"/>
 
-    <Button
-        android:id="@+id/flightMode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginBottom="10dp"
-        android:visibility="gone"
-        android:text="비행모드"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/arm"
-        android:background="#F6CEF5"/>
 </android.support.constraint.ConstraintLayout>

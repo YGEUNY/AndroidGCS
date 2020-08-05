@@ -160,22 +160,22 @@
 
         <Button
             android:id="@+id/BasicMap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
             android:text="일반지도"
             android:background="#F6CEF5"/>
 
         <Button
             android:id="@+id/TerrainMap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
             android:text="지형도"
             android:background="#F6CEF5"/>
 
         <Button
             android:id="@+id/SatelliteMap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
             android:text="위성지도"
             android:background="#F6CEF5"/>
 
@@ -183,9 +183,9 @@
 
     <Button
         android:id="@+id/arm"
-
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
         android:layout_marginStart="5dp"
         android:layout_marginBottom="10dp"
         android:text="ARM"
@@ -206,7 +206,7 @@
 
         <Spinner
             android:id="@+id/flightModeSelector"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="10dp"
@@ -215,8 +215,9 @@
 
     <Button
         android:id="@+id/takeOffBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
         android:layout_marginStart="5dp"
         android:layout_marginBottom="20dp"
         android:text="이륙고도"
@@ -226,32 +227,35 @@
 
     <LinearLayout
         android:id="@+id/takeOffLayout"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginBottom="70dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/takeOffBtn">
-
-
+        app:layout_constraintStart_toEndOf="@+id/takeOffBtn"
+        >
 
         <Button
             android:id="@+id/takeOffDown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#F6FEE3" />
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:background="#F6FEE3"
+            android:text="-0.5" />
+
         <Button
             android:id="@+id/takeOffUp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="5dp"
             android:background="#F6FEE3"
-            android:layout_marginLeft="5dp"/>
+            android:text="+0.5" />
     </LinearLayout>
 
     <Button
         android:id="@+id/droneConnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="10dp"
         android:text="연결하기"
@@ -261,8 +265,8 @@
 
     <Button
         android:id="@+id/mapLock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="10dp"
         android:text="맵 해제"
@@ -272,8 +276,8 @@
 
     <Button
         android:id="@+id/mapType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="10dp"
         android:text="일반지도"
@@ -283,8 +287,8 @@
 
     <Button
         android:id="@+id/cadastralONOff"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="10dp"
         android:text="지적도ON"
@@ -294,14 +298,12 @@
 
     <Button
         android:id="@+id/clear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:text="CLEAR"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="#F6CEF5"/>
-
-
 </android.support.constraint.ConstraintLayout>

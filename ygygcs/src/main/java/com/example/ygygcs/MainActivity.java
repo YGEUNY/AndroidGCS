@@ -57,6 +57,7 @@ import com.o3dr.services.android.lib.drone.property.Altitude;
 import com.o3dr.services.android.lib.drone.property.Attitude;
 import com.o3dr.services.android.lib.drone.property.Battery;
 import com.o3dr.services.android.lib.drone.property.Gps;
+import com.o3dr.services.android.lib.drone.property.GuidedState;
 import com.o3dr.services.android.lib.drone.property.Home;
 import com.o3dr.services.android.lib.drone.property.Speed;
 import com.o3dr.services.android.lib.drone.property.State;
@@ -72,7 +73,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.o3dr.android.client.apis.ExperimentalApi.getApi;
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, DroneListener, TowerListener, LinkListener{
+
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, DroneListener, TowerListener, LinkListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private Drone drone;
     private ControlTower controlTower;
@@ -83,16 +85,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private double takeOffAltitude = 3.5;
     private Spinner modeSelector;
 
-    Button btnArm, btnTakeOffAltitude, btnTakeOffUp, btnTakeOffDown, btnMapLock, btnMapType, btnCadastral, btnClear, btnBasic, btnSatellite,  btnTerrain, btnDroneConnect;
+    Button btnArm, btnTakeOffAltitude, btnTakeOffUp, btnTakeOffDown, btnMapLock, btnMapType, btnCadastral, btnClear, btnBasic, btnSatellite, btnTerrain, btnDroneConnect;
     TableLayout visBtn, visSpinner;
     LinearLayout takeOffLayout;
     Boolean mapONOFf, mapClear, mapCadstral;
     LatLng vehicleLatLng;
-    List<Marker> markers = new ArrayList<>();
     Marker marker = new Marker();
-    static LatLng mGuidePoint;  //가이드모드 목적지 저장
-    static Marker mMarkerGuide = new Marker();;   //GCS위치표시
-    static OverlayImage guideIcon;
+    LatLng mGuidePoint;  //가이드모드 목적지 저장
+    Marker mMarkerGuide = new Marker();
+    ;   //GCS위치표시
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,12 +104,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.controlTower = new ControlTower(context);
         this.drone = new Drone(context);
 
-        this.modeSelector = (Spinner)findViewById(R.id.flightModeSelector);
+        this.modeSelector = (Spinner) findViewById(R.id.flightModeSelector);
         this.modeSelector.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 //                ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
-               onFlightModeSelected(view);
+                onFlightModeSelected(view);
             }
 
             @Override
@@ -135,36 +136,47 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLogoMargin(2080, 0, 0, 925);
 
-        uiSettings.setScrollGesturesEnabled(false);
+        uiSettings.setScrollGesturesEnabled(true);
 
         btnStart();
 
         myMap.setOnMapLongClickListener(new NaverMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
-                GuidedMode(pointF, latLng);
+                setGuidedMode(latLng);
             }
         });
     }
 
-    private void GuidedMode(@NonNull PointF pointF, @NonNull final LatLng latLng){
+    private void setGuidedMode(@NonNull final LatLng latLng) {
+        State vehicleState = this.drone.getAttribute(AttributeType.STATE);
+        VehicleMode vehicleMode = vehicleState.getVehicleMode();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("확인하시면 가이드모드로 전환 후 기체가 이동합니다.");
         builder.setCancelable(false).setPositiveButton
                 ("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mMarkerGuide = null;
-                        guideIcon = OverlayImage.fromResource(R.drawable.flag_icon);
-                        mMarkerGuide.setIcon(guideIcon);
+                        //Action for 'Yes' Button
                         mMarkerGuide.setPosition(new LatLng(latLng.latitude, latLng.longitude));
                         mMarkerGuide.setMap(myMap);
-
-                        //Action for 'Yes' Button
+                        mMarkerGuide.setIcon(OverlayImage.fromResource(R.drawable.flag_icon));
+                        mMarkerGuide.setHeight(70);
+                        mMarkerGuide.setWidth(70);
+                        alertUser("가이드1");
+                        Log.e("mylog","로그1");
                         VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED, new AbstractCommandListener() {
                             @Override
                             public void onSuccess() {
+                                alertUser("가이드2");
+                                Log.e("mylog","로그2");
                                 ControlApi.getApi(drone).goTo(new LatLong(latLng.latitude, latLng.longitude), true, null);
+                                mGuidePoint = new LatLng(latLng.latitude, latLng.longitude);
+                                    if (checkGoal(mGuidePoint)) {
+                                        alertUser("목적지로 이동 성공");
+                                    } else {
+                                        alertUser("목적지로 이동 실패");
+                                }
                             }
 
                             @Override
@@ -187,12 +199,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         builder.show();
     }
 
-    private void ChangeGuidedMode(){
-
+    public boolean checkGoal(LatLng recentLatLng) {
+        GuidedState guidedState = this.drone.getAttribute(AttributeType.GUIDED_STATE);
+        LatLng target = new LatLng(guidedState.getCoordinate().getLatitude(),
+                guidedState.getCoordinate().getLongitude());
+        return target.distanceTo(recentLatLng) <= 1;
     }
 
+
     // 버튼 이벤트
-    private void btnStart(){
+    private void btnStart() {
         btnArm = findViewById(R.id.arm);
         btnMapLock = findViewById(R.id.mapLock);
         btnMapType = findViewById(R.id.mapType);
@@ -209,10 +225,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnTakeOffDown = findViewById(R.id.takeOffDown);
         final UiSettings uiSettings = myMap.getUiSettings();
 
-        btnTakeOffAltitude.setOnClickListener(new View.OnClickListener(){
+        btnTakeOffAltitude.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(takeOffLayout.getVisibility() == View.VISIBLE)
+                if (takeOffLayout.getVisibility() == View.VISIBLE)
                     takeOffLayout.setVisibility(View.GONE);
                 else
                     takeOffLayout.setVisibility(View.VISIBLE);
@@ -222,15 +238,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnTakeOffUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              takeOffAltitude += 0.5;
-              btnTakeOffAltitude.setText(takeOffAltitude + "m\n이륙고도");
+                takeOffAltitude += 0.5;
+                btnTakeOffAltitude.setText(takeOffAltitude + "m\n이륙고도");
             }
         });
 
         btnTakeOffDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                takeOffAltitude -=0.5;
+                takeOffAltitude -= 0.5;
                 btnTakeOffAltitude.setText(takeOffAltitude + "m\n이륙고도");
             }
         });
@@ -238,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnMapType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(visBtn.getVisibility() == View.VISIBLE)
+                if (visBtn.getVisibility() == View.VISIBLE)
                     visBtn.setVisibility(View.GONE);
                 else
                     visBtn.setVisibility(View.VISIBLE);
@@ -276,11 +292,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnCadastral.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mapCadstral){
+                if (mapCadstral) {
                     myMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL, true);
                     btnCadastral.setText("지적도OFF");
                     mapCadstral = false;
-                }else{
+                } else {
                     myMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_CADASTRAL, false);
                     btnCadastral.setText("지적도ON");
                     mapCadstral = true;
@@ -292,11 +308,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnMapLock.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mapONOFf){
+                if (mapONOFf) {
                     uiSettings.setScrollGesturesEnabled(false);
                     btnMapLock.setText("맵 해제");
                     mapONOFf = false;
-                }else{
+                } else {
                     uiSettings.setScrollGesturesEnabled(true);
                     btnMapLock.setText("맵 잠금");
                     mapONOFf = true;
@@ -312,10 +328,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                    markers.get(Marker_Count - 1).setMap(null);
 //                }
 
-                if(mapClear){
+                if (mapClear) {
 
                     mapClear = false;
-                }else{
+                } else {
 
                     mapClear = true;
                 }
@@ -431,31 +447,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void checkSoloState() {
         final SoloState soloState = drone.getAttribute(SoloAttributes.SOLO_STATE);
-        if (soloState == null){
+        if (soloState == null) {
             alertUser("Unable to retrieve the solo state.");
-        }
-        else {
+        } else {
             alertUser("Solo state is up to date.");
         }
     }
 
     @Override
     public void onDroneServiceInterrupted(String errorMsg) {
-
     }
 
-    public void droneConnect(){
-        if(this.drone.isConnected()){
+    public void droneConnect() {
+        if (this.drone.isConnected()) {
             this.drone.disconnect();
             //Log.e("mylog","버튼connect");
-        }else{
-         //   Log.e("mylog","버튼DIsconnect");
+        } else {
+            //   Log.e("mylog","버튼DIsconnect");
             ConnectionParameter connectionParams = ConnectionParameter.newUdpConnection(null);
             this.drone.connect(connectionParams);
         }
     }
 
-    public void armConnect(){
+    public void armConnect() {
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
 
         if (vehicleState.isFlying()) {
@@ -514,7 +528,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public void Arming(){
+    public void Arming() {
         VehicleApi.getApi(this.drone).arm(true, false, new SimpleCommandListener() {
             @Override
             public void onError(int executionError) {
@@ -530,7 +544,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLinkStateUpdated(@NonNull LinkConnectionStatus connectionStatus) {
-        switch(connectionStatus.getStatusCode()){
+        switch (connectionStatus.getStatusCode()) {
             case LinkConnectionStatus.FAILED:
                 Bundle extras = connectionStatus.getExtras();
                 String msg = null;
@@ -554,15 +568,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.d(TAG, message);
     }
 
-    protected void updateVolt(){
-        TextView voltTextView = (TextView)findViewById(R.id.voltValueTextView);
+    protected void updateVolt() {
+        TextView voltTextView = (TextView) findViewById(R.id.voltValueTextView);
         Battery droneVolt = this.drone.getAttribute(AttributeType.BATTERY);
-        voltTextView.setText(String.format("%3.1f",droneVolt.getBatteryVoltage()) + "V");
+        voltTextView.setText(String.format("%3.1f", droneVolt.getBatteryVoltage()) + "V");
     }
 
     public void onFlightModeSelected(View view) {
         final VehicleMode vehicleMode = (VehicleMode) this.modeSelector.getSelectedItem();
-
         VehicleApi.getApi(this.drone).setVehicleMode(vehicleMode, new AbstractCommandListener() {
             @Override
             public void onSuccess() {
@@ -579,12 +592,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 alertUser("비행 모드 변경 시간 초과.");
             }
         });
-
-
     }
 
-    protected void updateSpeed(){
-        TextView speedTextView = (TextView)findViewById(R.id.speedValueTextView);
+    protected void updateSpeed() {
+        TextView speedTextView = (TextView) findViewById(R.id.speedValueTextView);
         Speed droneSpeed = this.drone.getAttribute(AttributeType.SPEED);
         speedTextView.setText(String.format("%3.1f", droneSpeed.getGroundSpeed()) + "m/s");
     }
@@ -593,59 +604,59 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         TextView altitudeTextView = (TextView) findViewById(R.id.altitudeValueTextView);
         Altitude droneAltitude = this.drone.getAttribute(AttributeType.ALTITUDE);
         altitudeTextView.setText(String.format("%3.1f", droneAltitude.getAltitude()) + "m");
-        }
+    }
 
-    protected void updateYaw(){
-        TextView yawTextView = (TextView)findViewById(R.id.yawValueTextView);
+    protected void updateYaw() {
+        TextView yawTextView = (TextView) findViewById(R.id.yawValueTextView);
         Attitude droneYaw = this.drone.getAttribute(AttributeType.ATTITUDE);
-        if(droneYaw.getYaw() < 0){
-            yawTextView.setText(String.format("%3.0f",(360 + droneYaw.getYaw())) + "deg");
-        }else{
-            yawTextView.setText(String.format("%3.0f",droneYaw.getYaw()) + "deg");
+        if (droneYaw.getYaw() < 0) {
+            yawTextView.setText(String.format("%3.0f", (360 + droneYaw.getYaw())) + "deg");
+        } else {
+            yawTextView.setText(String.format("%3.0f", droneYaw.getYaw()) + "deg");
         }
     }
 
-    protected void updateSatellite(){
-        TextView satelliteTextView = (TextView)findViewById(R.id.satelliteValueTextView);
+    protected void updateSatellite() {
+        TextView satelliteTextView = (TextView) findViewById(R.id.satelliteValueTextView);
         Gps droneSatellite = this.drone.getAttribute(AttributeType.GPS);
         satelliteTextView.setText(droneSatellite.getSatellitesCount() + "개");
     }
 
-    protected void updateGPS(){
+    protected void updateGPS() {
         Gps droneGps = this.drone.getAttribute(AttributeType.GPS);
         LatLong vehiclePosition = droneGps.getPosition();
 
-        if(vehiclePosition == null) {
-            Log.d("Gps값 null","다시");
-        }else{
+        if (vehiclePosition == null) {
+            Log.d("Gps값 null", "다시");
+        } else {
             try {
                 vehicleLatLng = new LatLng(vehiclePosition.getLatitude(), vehiclePosition.getLongitude());
             } catch (Exception e) {
                 Log.d("errorCheckLog", e.getLocalizedMessage().toString());
             }
 
-         Log.d("GPS값", "위도 : " + vehiclePosition.getLatitude() + "  /  경도 : " + vehiclePosition.getLongitude());
-         CameraUpdate cameraUpdate = CameraUpdate.scrollTo(vehicleLatLng);
-         myMap.moveCamera(cameraUpdate);
+            Log.d("GPS값", "위도 : " + vehiclePosition.getLatitude() + "  /  경도 : " + vehiclePosition.getLongitude());
+            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(vehicleLatLng);
+            myMap.moveCamera(cameraUpdate);
 
-         marker.setPosition(vehicleLatLng);
-         Attitude droneYaw = this.drone.getAttribute(AttributeType.ATTITUDE);
-         double yaw = droneYaw.getYaw();
-         if((int) yaw < 0){
-             yaw += 360;
-         }
-         marker.setAngle((float)yaw);
+            marker.setPosition(vehicleLatLng);
+            Attitude droneYaw = this.drone.getAttribute(AttributeType.ATTITUDE);
+            double yaw = droneYaw.getYaw();
+            if ((int) yaw < 0) {
+                yaw += 360;
+            }
+            marker.setAngle((float) yaw);
 
-         marker.setIcon(OverlayImage.fromResource(R.drawable.drone_marker));
-         marker.setAnchor(new PointF(0.5F, 0.77F));
-         marker.setMap(myMap);
+            marker.setIcon(OverlayImage.fromResource(R.drawable.drone_marker));
+            marker.setAnchor(new PointF(0.5F, 0.77F));
+            marker.setMap(myMap);
 
-         Button btnMapMove = findViewById(R.id.mapLock);
-         String text = (String)btnMapMove.getText();
-         if(text.equals("맵 잠금")){
-            cameraUpdate = CameraUpdate.scrollTo(new LatLng(vehiclePosition.getLatitude(), vehiclePosition.getLongitude()));
-             myMap.moveCamera(cameraUpdate);
-         }
+            Button btnMapMove = findViewById(R.id.mapLock);
+            String text = (String) btnMapMove.getText();
+            if (text.equals("맵 잠금")) {
+                cameraUpdate = CameraUpdate.scrollTo(new LatLng(vehiclePosition.getLatitude(), vehiclePosition.getLongitude()));
+                myMap.moveCamera(cameraUpdate);
+            }
         }
     }
 
@@ -680,7 +691,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    protected void updateFlightModeButton(){
+    protected void updateFlightModeButton() {
         visSpinner = findViewById(R.id.spinnerLayout);
         if (!this.drone.isConnected()) {
             visSpinner.setVisibility(View.INVISIBLE);
@@ -689,9 +700,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void updateTakeOffButton(){
+    private void updateTakeOffButton() {
         btnTakeOffAltitude = findViewById(R.id.takeOffBtn);
-        if(!this.drone.isConnected())
+        if (!this.drone.isConnected())
             btnTakeOffAltitude.setVisibility(View.GONE);
         else {
             btnTakeOffAltitude.setText(takeOffAltitude + "m\n이륙고도");
@@ -711,11 +722,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         VehicleMode vehicleMode = vehicleState.getVehicleMode();
         ArrayAdapter arrayAdapter = (ArrayAdapter) this.modeSelector.getAdapter();
         this.modeSelector.setSelection(arrayAdapter.getPosition(vehicleMode));
-        TextView flightModeTextView = (TextView)findViewById(R.id.vehicleModeValueTextView);
+        TextView flightModeTextView = (TextView) findViewById(R.id.vehicleModeValueTextView);
         flightModeTextView.setText(vehicleMode.toString());
     }
 
-    protected void clearInformation(){
+    protected void clearInformation() {
         TextView voltTextView = (TextView) findViewById(R.id.voltValueTextView);
         voltTextView.setText("");
 
@@ -725,7 +736,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         TextView altitudeTextView = (TextView) findViewById(R.id.altitudeValueTextView);
         altitudeTextView.setText("");
 
-        TextView speedTextView = (TextView)findViewById(R.id.speedValueTextView);
+        TextView speedTextView = (TextView) findViewById(R.id.speedValueTextView);
         speedTextView.setText("");
 
         TextView yawTextView = (TextView) findViewById(R.id.yawValueTextView);

@@ -269,7 +269,7 @@
         android:layout_height="40dp"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="10dp"
-        android:text="맵 잠금"
+        android:text="맵 잠금하기"
         app:layout_constraintBottom_toBottomOf="@+id/map"
         app:layout_constraintEnd_toStartOf="@+id/mapType"
         android:background="#F6CEF5"/>

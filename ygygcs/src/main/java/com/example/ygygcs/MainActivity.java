@@ -32,6 +32,7 @@ import com.naver.maps.map.OnMapReadyCallback;;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.OverlayImage;
+import com.naver.maps.map.overlay.PolylineOverlay;
 import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.apis.ControlApi;
@@ -81,19 +82,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int droneType = Type.TYPE_UNKNOWN;
     private final Handler handler = new Handler();
     private int markerCount = 0;
-    NaverMap myMap;
+    private NaverMap myMap;
     private double takeOffAltitude = 3.5;
     private Spinner modeSelector;
 
-    Button btnArm, btnTakeOffAltitude, btnTakeOffUp, btnTakeOffDown, btnMapLock, btnMapType, btnCadastral, btnClear, btnBasic, btnSatellite, btnTerrain, btnDroneConnect;
-    TableLayout visBtn, visSpinner;
-    LinearLayout takeOffLayout;
-    Boolean mapONOFf, mapClear, mapCadstral;
-    LatLng vehicleLatLng;
-    Marker marker = new Marker();
-    LatLng mGuidePoint;  //가이드모드 목적지 저장
-    Marker mMarkerGuide = new Marker();
-    ;   //GCS위치표시
+    private Button btnArm, btnTakeOffAltitude, btnTakeOffUp, btnTakeOffDown, btnMapLock, btnMapType, btnCadastral, btnClear, btnBasic, btnSatellite, btnTerrain, btnDroneConnect;
+    private TableLayout visBtn, visSpinner;
+    private LinearLayout takeOffLayout;
+    private Boolean mapONOFf, mapClear, mapCadstral;
+    private LatLng vehicleLatLng;
+    private Marker marker = new Marker();
+    private LatLng mGuidePoint;  //가이드모드 목적지 저장
+    private Marker mMarkerGuide = new Marker();
+    private PolylineOverlay polyline = new PolylineOverlay();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         myMap.setMapType(NaverMap.MapType.Basic);
 
         UiSettings uiSettings = naverMap.getUiSettings();
-        uiSettings.setLogoMargin(2080, 0, 0, 925);
+  //      uiSettings.setLogoMargin(2080, 0, 0, 925);
 
         uiSettings.setScrollGesturesEnabled(true);
 
@@ -154,26 +155,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("확인하시면 가이드모드로 전환 후 기체가 이동합니다.");
         builder.setCancelable(false).setPositiveButton
-                ("확인", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //Action for 'Yes' Button
-                        mMarkerGuide.setPosition(new LatLng(latLng.latitude, latLng.longitude));
-                        mMarkerGuide.setMap(myMap);
-                        mMarkerGuide.setIcon(OverlayImage.fromResource(R.drawable.flag_icon));
-                        mMarkerGuide.setHeight(70);
-                        mMarkerGuide.setWidth(70);
-                        alertUser("가이드1");
-                        Log.e("mylog","로그1");
+                                ("확인", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        //Action for 'Yes' Button
+                                        mMarkerGuide.setPosition(new LatLng(latLng.latitude, latLng.longitude));
+                                        mMarkerGuide.setMap(myMap);
+                                        mMarkerGuide.setIcon(OverlayImage.fromResource(R.drawable.flag_icon));
+                                        mMarkerGuide.setHeight(70);
+                                        mMarkerGuide.setWidth(70);
+
                         VehicleApi.getApi(drone).setVehicleMode(VehicleMode.COPTER_GUIDED, new AbstractCommandListener() {
                             @Override
                             public void onSuccess() {
-                                alertUser("가이드2");
-                                Log.e("mylog","로그2");
                                 ControlApi.getApi(drone).goTo(new LatLong(latLng.latitude, latLng.longitude), true, null);
+                                alertUser("목적지로 이동합니다.");
+
                                 mGuidePoint = new LatLng(latLng.latitude, latLng.longitude);
                                     if (checkGoal(mGuidePoint)) {
                                         alertUser("목적지로 이동 성공");
+                                        marker.setMap(null);
                                     } else {
                                         alertUser("목적지로 이동 실패");
                                 }
@@ -310,11 +311,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 if (mapONOFf) {
                     uiSettings.setScrollGesturesEnabled(false);
-                    btnMapLock.setText("맵 해제");
+                    btnMapLock.setText("맵 해제하기");
                     mapONOFf = false;
                 } else {
                     uiSettings.setScrollGesturesEnabled(true);
-                    btnMapLock.setText("맵 잠금");
+                    btnMapLock.setText("맵 잠금하기");
                     mapONOFf = true;
                 }
             }
@@ -327,14 +328,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                if (Marker_Count - 1 >= 0) {
 //                    markers.get(Marker_Count - 1).setMap(null);
 //                }
-
-                if (mapClear) {
-
-                    mapClear = false;
-                } else {
-
-                    mapClear = true;
-                }
+                polyline.setMap(null);
             }
         });
 
@@ -636,8 +630,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
             Log.d("GPS값", "위도 : " + vehiclePosition.getLatitude() + "  /  경도 : " + vehiclePosition.getLongitude());
-            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(vehicleLatLng);
-            myMap.moveCamera(cameraUpdate);
 
             marker.setPosition(vehicleLatLng);
             Attitude droneYaw = this.drone.getAttribute(AttributeType.ATTITUDE);
@@ -650,13 +642,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             marker.setIcon(OverlayImage.fromResource(R.drawable.drone_marker));
             marker.setAnchor(new PointF(0.5F, 0.77F));
             marker.setMap(myMap);
+            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
+            myMap.moveCamera(cameraUpdate);
 
-            Button btnMapMove = findViewById(R.id.mapLock);
-            String text = (String) btnMapMove.getText();
-            if (text.equals("맵 잠금")) {
-                cameraUpdate = CameraUpdate.scrollTo(new LatLng(vehiclePosition.getLatitude(), vehiclePosition.getLongitude()));
-                myMap.moveCamera(cameraUpdate);
-            }
+//            Button btnMapMove = findViewById(R.id.mapLock);
+//            String text = (String) btnMapMove.getText();
+//            if (text.equals("맵 해제")) {
+//                cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
+//                myMap.moveCamera(cameraUpdate);
+//            }
+            polyline.setCoords(Collections.singletonList(new LatLng(vehiclePosition.getLatitude(), vehiclePosition.getLongitude())));
+            polyline.setColor(Color.GREEN);
+            polyline.setMap(myMap);
         }
     }
 

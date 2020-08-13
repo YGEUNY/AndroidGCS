@@ -15,6 +15,102 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/ABDistance"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="5dp"
+        android:background="#F6FEE3"
+        android:text="AB거리"
+        app:layout_constraintEnd_toStartOf="@+id/flightRange"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/flightRange"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="5dp"
+        android:background="#F6FEE3"
+        android:text="5m\n비행폭"
+        app:layout_constraintEnd_toStartOf="@+id/mission"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/mission"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="7dp"
+        android:background="#F6FEE3"
+        android:text="임무"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        android:visibility="gone"/>
+
+    <TableLayout
+        android:id="@+id/flightRangeLayout"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="7dp"
+        app:layout_constraintEnd_toStartOf="@+id/missionLayout"
+        app:layout_constraintTop_toBottomOf="@+id/flightRange"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/flightRangeUp"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:background="#F6FEE3"
+            android:text="+0.5" />
+
+        <Button
+            android:id="@+id/flightRangeDown"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="7dp"
+            android:background="#F6FEE3"
+            android:text="-0.5" />
+    </TableLayout>
+
+    <TableLayout
+        android:id="@+id/missionLayout"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="7dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mission"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/missionAB"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:background="#F6FEE3"
+            android:text="AB" />
+
+        <Button
+            android:id="@+id/missionPolygon"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="7dp"
+            android:background="#F6FEE3"
+            android:text="다각형" />
+
+        <Button
+            android:id="@+id/missionCancel"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="7dp"
+            android:background="#F6FEE3"
+            android:text="취소" />
+    </TableLayout>
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"

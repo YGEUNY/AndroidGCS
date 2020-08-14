@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PointF;
-import android.location.GpsSatellite;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -26,7 +25,6 @@ import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
-import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;;
 
 import com.naver.maps.map.UiSettings;
@@ -36,30 +34,21 @@ import com.naver.maps.map.overlay.PolylineOverlay;
 import com.o3dr.android.client.ControlTower;
 import com.o3dr.android.client.Drone;
 import com.o3dr.android.client.apis.ControlApi;
-import com.o3dr.android.client.apis.ExperimentalApi;
 import com.o3dr.android.client.apis.VehicleApi;
-import com.o3dr.android.client.apis.solo.SoloCameraApi;
 import com.o3dr.android.client.interfaces.DroneListener;
 import com.o3dr.android.client.interfaces.LinkListener;
 import com.o3dr.android.client.interfaces.TowerListener;
-import com.o3dr.android.client.utils.video.DecoderListener;
-import com.o3dr.android.client.utils.video.MediaCodecManager;
 import com.o3dr.services.android.lib.coordinate.LatLong;
-import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.attribute.AttributeEvent;
 import com.o3dr.services.android.lib.drone.attribute.AttributeType;
 import com.o3dr.services.android.lib.drone.companion.solo.SoloAttributes;
 import com.o3dr.services.android.lib.drone.companion.solo.SoloState;
 import com.o3dr.services.android.lib.drone.connection.ConnectionParameter;
-import com.o3dr.services.android.lib.drone.connection.ConnectionType;
-import com.o3dr.services.android.lib.drone.mission.item.command.Takeoff;
-import com.o3dr.services.android.lib.drone.mission.item.command.YawCondition;
 import com.o3dr.services.android.lib.drone.property.Altitude;
 import com.o3dr.services.android.lib.drone.property.Attitude;
 import com.o3dr.services.android.lib.drone.property.Battery;
 import com.o3dr.services.android.lib.drone.property.Gps;
 import com.o3dr.services.android.lib.drone.property.GuidedState;
-import com.o3dr.services.android.lib.drone.property.Home;
 import com.o3dr.services.android.lib.drone.property.Speed;
 import com.o3dr.services.android.lib.drone.property.State;
 import com.o3dr.services.android.lib.drone.property.Type;
@@ -68,12 +57,9 @@ import com.o3dr.services.android.lib.gcs.link.LinkConnectionStatus;
 import com.o3dr.services.android.lib.model.AbstractCommandListener;
 import com.o3dr.services.android.lib.model.SimpleCommandListener;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static com.o3dr.android.client.apis.ExperimentalApi.getApi;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, DroneListener, TowerListener, LinkListener {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -96,8 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker mMarkerGuide = new Marker();
     private PolylineOverlay polyline = new PolylineOverlay();
     private List<LatLng> coords = new ArrayList<>();
-    private List<LatLng> missionLatlng = new ArrayList<>();
-    private List<Marker> missionMarker = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,14 +124,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         uiSettings.setScrollGesturesEnabled(true);
 
         btnStart();
-
-        myMap.setOnMapLongClickListener(new NaverMap.OnMapLongClickListener() {
-            @Override
-            public void onMapLongClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
-                mGuidePoint = new LatLng(latLng.latitude, latLng.longitude);
-                startGuidedMode(latLng);
-            }
-        });
     }
 
     // <<<<<<<<<<<<<===== 롱클릭 할 때 가이드모드 =====>>>>>>>>>>>>>>>
@@ -504,6 +481,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             case AttributeEvent.STATE_UPDATED:
             case AttributeEvent.STATE_ARMING:
                 updateArmButton();
+
                 break;
 
             case AttributeEvent.TYPE_UPDATED:
@@ -577,6 +555,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
 
         if (vehicleState.isFlying()) {
+            myMap.setOnMapLongClickListener(new NaverMap.OnMapLongClickListener() {
+                @Override
+                public void onMapLongClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+                    mGuidePoint = new LatLng(latLng.latitude, latLng.longitude);
+                    startGuidedMode(latLng);
+                }
+            });
             // Land
             VehicleApi.getApi(this.drone).setVehicleMode(VehicleMode.COPTER_LAND, new SimpleCommandListener() {
                 @Override

@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Marker mMarkerGuide = new Marker();
     private PolylineOverlay polyline = new PolylineOverlay();
     private List<LatLng> coords = new ArrayList<>();
+    private PolygonMission polygonMission;
 
 
     @Override
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         final Context context = getApplicationContext();
         this.controlTower = new ControlTower(context);
         this.drone = new Drone(context);
+        polygonMission = new PolygonMission();
 
         this.modeSelector = (Spinner) findViewById(R.id.flightModeSelector);
         this.modeSelector.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
@@ -123,6 +125,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         uiSettings = naverMap.getUiSettings();
         uiSettings.setScrollGesturesEnabled(true);
 
+        myMap.setOnMapLongClickListener(new NaverMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+
+                mGuidePoint = new LatLng(latLng.latitude, latLng.longitude);
+                if(drone.isConnected()){
+                    startGuidedMode(latLng);
+                }else{
+                    alertUser("기체를 연결하세요");
+                }
+
+            }
+        });
+
         btnStart();
     }
 
@@ -130,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void startGuidedMode(@NonNull final LatLng latLng) {
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
         VehicleMode vehicleMode = vehicleState.getVehicleMode();
-        if(vehicleMode == VehicleMode.COPTER_GUIDED){
+        if(vehicleMode == VehicleMode.COPTER_GUIDED && mGuidePoint != null){
             alertUser("목적지를 변견합니다.");
            goToeGoal(latLng);
         }
@@ -248,7 +264,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnMissionAB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createABMarker();
+                btnMission.setText("AB");
+                polygonMission.drawPolygon();
             }
         });
 
@@ -555,13 +572,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         State vehicleState = this.drone.getAttribute(AttributeType.STATE);
 
         if (vehicleState.isFlying()) {
-            myMap.setOnMapLongClickListener(new NaverMap.OnMapLongClickListener() {
-                @Override
-                public void onMapLongClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
-                    mGuidePoint = new LatLng(latLng.latitude, latLng.longitude);
-                    startGuidedMode(latLng);
-                }
-            });
             // Land
             VehicleApi.getApi(this.drone).setVehicleMode(VehicleMode.COPTER_LAND, new SimpleCommandListener() {
                 @Override
@@ -710,34 +720,35 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             marker.setPosition(vehicleLatLng);
             Attitude droneYaw = this.drone.getAttribute(AttributeType.ATTITUDE);
-            double yaw = droneYaw.getYaw();
-            if ((int) yaw < 0) {
-                yaw += 360;
-            }
-            marker.setAngle((float) yaw);
-
-            marker.setIcon(OverlayImage.fromResource(R.drawable.drone_marker));
-            marker.setAnchor(new PointF(0.5F, 0.77F));
-            marker.setMap(myMap);
-            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
-            myMap.moveCamera(cameraUpdate);
-
-            State vehicleState = this.drone.getAttribute(AttributeType.STATE);
-            VehicleMode vehicleMode = vehicleState.getVehicleMode();
-            if(vehicleMode == VehicleMode.COPTER_GUIDED){
-                if(checkGoal(mGuidePoint) == false) {
-                    alertUser("목적지로 이동 성공");
-                    marker.setMap(null);
-                    changeToLoiter();
+                double yaw = droneYaw.getYaw();
+                if ((int) yaw < 0) {
+                    yaw += 360;
                 }
-            }
+                marker.setAngle((float) yaw);
 
-            Collections.addAll(coords, marker.getPosition());
-            polyline.setCoords(coords);
-            polyline.setColor(Color.GREEN);
-            polyline.setMap(myMap);
-            polyline.setWidth(10);
-        }
+                marker.setIcon(OverlayImage.fromResource(R.drawable.drone_marker));
+                marker.setAnchor(new PointF(0.5F, 0.77F));
+                marker.setMap(myMap);
+                CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
+                myMap.moveCamera(cameraUpdate);
+
+                State vehicleState = this.drone.getAttribute(AttributeType.STATE);
+                VehicleMode vehicleMode = vehicleState.getVehicleMode();
+                if(vehicleMode == VehicleMode.COPTER_GUIDED && mGuidePoint != null){
+                    if(checkGoal(mGuidePoint) == false) {
+                        alertUser("목적지로 이동 성공");
+                        changeToLoiter();
+                        mMarkerGuide.setMap(null);
+                        mGuidePoint = null;
+                    }
+                }
+
+                Collections.addAll(coords, marker.getPosition());
+                polyline.setCoords(coords);
+                polyline.setColor(Color.GREEN);
+                polyline.setMap(myMap);
+                polyline.setWidth(10);
+            }
     }
 
     // <<<<<<<<<<<<< ==== 드론 연결됐을 때 버튼 활성화 ===== >>>>>>>>>>>>>>>>>>>>>

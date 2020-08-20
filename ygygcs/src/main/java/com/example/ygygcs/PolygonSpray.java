@@ -1,8 +1,6 @@
 package com.example.ygygcs;
 
 import android.util.Log;
-import com.metarobotics.mygcs.LayoutHelpers.ABPestConButtonGroup;
-import com.metarobotics.mygcs.utils.SharedPrefHelper;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.coordinate.LatLongAlt;
 import com.o3dr.services.android.lib.drone.mission.Mission;

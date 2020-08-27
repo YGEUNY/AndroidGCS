@@ -1,7 +1,16 @@
 package com.example.ygygcs;
 
+import android.graphics.PointF;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.geometry.LatLngBounds;
+import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.OverlayImage;
+import com.naver.maps.map.overlay.PolygonOverlay;
+import com.o3dr.android.client.Drone;
 import com.o3dr.services.android.lib.coordinate.LatLong;
 import com.o3dr.services.android.lib.util.MathUtils;
 
@@ -16,6 +25,9 @@ import java.util.List;
 public class PolygonMission {
     private ArrayList<LatLong> polygonPointList = new ArrayList<>();
     private ArrayList<LatLong> sprayPotintList = new ArrayList<>();
+    private List<Marker> targetMarker = new ArrayList<>();
+    private Marker marker = new Marker();
+    private PolygonOverlay polygon = new PolygonOverlay();
 
     protected double sprayAngle;
     private MainActivity mainActivity;
@@ -25,7 +37,7 @@ public class PolygonMission {
     private LatLong pointB = null;
     private double sprayDistance = 5.5f;
     private int maxSprayDistance = 50;
-    private int capacity = 0;
+    private int capacity = 0, markerCount = 0;
 
     public static enum PolygonSprayState{
         NONE,
@@ -42,9 +54,9 @@ public class PolygonMission {
         this.capacity = capacity;
     }
 
-//    PolygonMission(MainActivity activity){
-//        this.mainActivity = activity;
-//    }
+    PolygonMission(MainActivity activity){
+        this.mainActivity = activity;
+    }
 
     public void createPolygonPoint(LatLong latLong){
         double angle1 = 0, angle2 = 0;
@@ -71,7 +83,7 @@ public class PolygonMission {
        // }
 
         if(polygonPointList.size() >2){
-            drawPolygon();
+//            drawABPolygon();
          //   if(){
 //                sprayAngle = angle1;
 //            }else{
@@ -90,7 +102,7 @@ public class PolygonMission {
 
     public void modifyPolygonPoint(){
         if(polygonPointList.size() > 2){
-            drawPolygon();
+         //   drawABPolygon();
             sprayAngle = makeSprayAngle();
             try {
                 makeGrid();
@@ -127,8 +139,35 @@ public class PolygonMission {
 //        double dist1 = MathUtils.pointToLineDistance(trimedGrid.get(0));
     }
 
-    public void drawPolygon(){
+    public void drawABPolygon(Drone drone, final NaverMap myMap, double abDistance, double flightRange){
 
+        myMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+                markerCount++;
+                if(markerCount<=2){
+                    marker.setPosition(new LatLng(latLng.latitude, latLng.longitude));
+                    targetMarker.add(marker);
+                    if(markerCount==1)
+                        targetMarker.get(markerCount-1).setIcon(OverlayImage.fromResource(R.drawable.marker_a));
+                    else if(markerCount==2)
+                        targetMarker.get(markerCount-1).setIcon(OverlayImage.fromResource(R.drawable.marker_b));
+                    targetMarker.get(markerCount-1).setAnchor(new PointF(0.5F, 0.9F));
+                    targetMarker.get(markerCount-1).setMap(myMap);
+                }
+            }
+        });
+        if(markerCount == 2){
+            makePath(abDistance, flightRange);
+        }
+    }
+
+    private void makePath(double abDistance, double flightRange){
+        LatLngBounds area = new LatLngBounds(targetMarker.get(0).getPosition(), targetMarker.get(1).getPosition());
+        area.buffer(abDistance);
+
+        MathUtils
+        abDistance/flightRange;
     }
 
     public double makeSprayAngle(){

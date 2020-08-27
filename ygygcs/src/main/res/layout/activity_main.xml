@@ -15,6 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <Button
         android:id="@+id/ABDistance"
         android:layout_width="70dp"
@@ -22,10 +23,10 @@
         android:layout_marginTop="7dp"
         android:layout_marginEnd="5dp"
         android:background="#F6FEE3"
-        android:text="AB거리"
+        android:text="50m\nAB거리"
         app:layout_constraintEnd_toStartOf="@+id/flightRange"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/flightRange"
@@ -49,7 +50,32 @@
         android:text="임무"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+
+    <TableLayout
+        android:id="@+id/ABDistanceLayout"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="157dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ABDistance"
+        android:visibility="gone" >
+
+        <Button
+            android:id="@+id/ABDistanceUp"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:background="#F6FEE3"
+            android:text="+10" />
+
+        <Button
+            android:id="@+id/ABDistanceDown"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:background="#F6FEE3"
+            android:text="-10" />
+    </TableLayout>
 
     <TableLayout
         android:id="@+id/flightRangeLayout"

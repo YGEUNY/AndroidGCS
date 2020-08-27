@@ -68,12 +68,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private int droneType = Type.TYPE_UNKNOWN;
     private final Handler handler = new Handler();
     private NaverMap myMap;
-    private double takeOffAltitude = 3.5, flightRange = 5;
+    private double takeOffAltitude = 3.5, flightRange = 5, abDistance = 50;
     private Spinner modeSelector;
     private UiSettings uiSettings;
 
-    private Button btnABDistance, btnMission, btnFlightRange, btnFlightRangeUp, btnFlightRangeDown, btnMissionAB, btnMissionPolygon, btnMissionCancel, btnArm, btnTakeOffAltitude, btnTakeOffUp, btnTakeOffDown, btnMapLock, btnMapType, btnCadastral, btnClear, btnBasic, btnSatellite, btnTerrain, btnDroneConnect;
-    private TableLayout visBtn, visSpinner, missionLayout, flightRangeLayout;
+    private Button btnABDistance, btnABDistanceUp, btnABDistanceDown, btnMission, btnFlightRange, btnFlightRangeUp, btnFlightRangeDown, btnMissionAB, btnMissionPolygon, btnMissionCancel, btnArm, btnTakeOffAltitude, btnTakeOffUp, btnTakeOffDown, btnMapLock, btnMapType, btnCadastral, btnClear, btnBasic, btnSatellite, btnTerrain, btnDroneConnect;
+    private TableLayout visBtn, visSpinner, missionLayout, flightRangeLayout, abDistanceLayout;
     private LinearLayout takeOffLayout;
     private Boolean mapONOFf, mapCadstral;
     private LatLng vehicleLatLng;
@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private PolylineOverlay polyline = new PolylineOverlay();
     private List<LatLng> coords = new ArrayList<>();
     private PolygonMission polygonMission;
+    private MainActivity mainActivity;
 
 
     @Override
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         final Context context = getApplicationContext();
         this.controlTower = new ControlTower(context);
         this.drone = new Drone(context);
-        polygonMission = new PolygonMission();
+        polygonMission = new PolygonMission(mainActivity);
 
         this.modeSelector = (Spinner) findViewById(R.id.flightModeSelector);
         this.modeSelector.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
@@ -243,11 +244,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         btnFlightRange = findViewById(R.id.flightRange);
         btnFlightRangeUp = findViewById(R.id.flightRangeUp);
         btnFlightRangeDown = findViewById(R.id.flightRangeDown);
+        btnABDistance = findViewById(R.id.ABDistance);
+        btnABDistanceUp = findViewById(R.id.ABDistanceUp);
+        btnABDistanceDown = findViewById(R.id.ABDistanceDown);
 
         missionLayout = findViewById(R.id.missionLayout);
         flightRangeLayout = findViewById(R.id.flightRangeLayout);
         takeOffLayout = findViewById(R.id.takeOffLayout);
         visBtn = findViewById(R.id.buttonLayout);
+        abDistanceLayout = findViewById(R.id.ABDistanceLayout);
 
         uiSettings = myMap.getUiSettings();
 
@@ -265,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 btnMission.setText("AB");
-                polygonMission.drawPolygon();
+                polygonMission.drawABPolygon(drone, myMap, abDistance, flightRange);
             }
         });
 
@@ -297,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 flightRange += 0.5;
-                btnFlightRange.setText(flightRange+"\n비행폭");
+                btnFlightRange.setText(flightRange+"m\n비행폭");
             }
         });
 
@@ -305,7 +310,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 flightRange -= 0.5;
-                btnFlightRange.setText(flightRange+"\n비행폭");
+                btnFlightRange.setText(flightRange+"m\n비행폭");
+            }
+        });
+
+        btnABDistance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(abDistanceLayout.getVisibility() == View.VISIBLE)
+                    abDistanceLayout.setVisibility(View.GONE);
+                else
+                    abDistanceLayout.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btnABDistanceUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                abDistance += 10;
+                btnABDistance.setText(abDistance + "m\nAB거리");
+            }
+        });
+
+        btnABDistanceDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                abDistance -= 10;
+                btnABDistance.setText(abDistance + "m\nAB거리");
             }
         });
 
